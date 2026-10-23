@@ -1,0 +1,30 @@
+{
+  "name": "byte-sidekick",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Byte desktop companion",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "npm run build && electron .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run typecheck && npm test && npm run build",
+    "smoke": "npm run build && electron . --smoke-test"
+  },
+  "devDependencies": {
+    "electron": "45.0.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
