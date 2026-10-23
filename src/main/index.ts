@@ -21,6 +21,22 @@ app.whenReady().then(() => {
     });
     window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
     window.webContents.on('will-navigate', event => event.preventDefault());
+    if (process.argv.includes('--smoke-test')) {
+      const timer = setTimeout(() => app.exit(1), 15000);
+      window.webContents.once('did-finish-load', async () => {
+        try {
+          const result = await window.webContents.executeJavaScript(`(async () => {
+            const info = await window.byte.getAppInfo();
+            return { mode: info.mode, isolated: typeof require === 'undefined' && typeof process === 'undefined', heading: document.querySelector('h1')?.textContent };
+          })()`);
+          if (result.mode !== 'offline-shell' || !result.isolated || result.heading !== 'こんにちは、Byte です。') throw new Error('Smoke assertions failed');
+          console.log('Desktop smoke passed: loaded React, validated IPC, isolated renderer.');
+          clearTimeout(timer);
+          app.exit(0);
+        } catch (error) { console.error(error); app.exit(1); }
+      });
+      window.webContents.once('did-fail-load', () => app.exit(1));
+    }
     void window.loadFile(path.join(__dirname, 'index.html'));
   };
   createWindow();
