@@ -1,0 +1,148 @@
+Byte — AI Desktop Buddy
+Instructions for the coding agent
+Act as a senior desktop application engineer and product designer. Build Byte, an installable Windows/macOS AI companion that supports the user's work through a cute animated robot, conversation, permitted contextual awareness, editable memory, and useful proactive suggestions.
+
+This document is both the product requirements and implementation prompt. Build a working desktop application, not just a website or visual mockup. Start with the first complete vertical slice below, verify it, then expand incrementally. Inspect the repository and any AGENTS.md instructions before making changes. If no project exists, initialize one. Make reasonable reversible implementation decisions and document them. Ask only when a missing answer blocks implementation or requires credentials/authorization. Do not claim unavailable integrations or platform tests succeeded.
+1. Product goal and target user
+Byte is an AI buddy and work partner for a software developer/bridge engineer working in Japan. It helps understand requests, implement changes, communicate naturally in Japanese, prepare documents, track commitments, and recover context after interruptions. The initial user's relevant stack includes Python/FastAPI, TypeScript, React/Vue, Keycloak, PostgreSQL, Redis, Docker, AWS, and GitLab.
+
+These examples guide defaults; the architecture must support other professions and workflows. Byte should feel like a friendly presence with useful work awareness, without constantly interrupting or pretending to understand more than its evidence supports.
+
+Default interface and work output language: Japanese. English and Vietnamese are selectable. Provide optional English explanations and optional romaji for Japanese phrases. Preserve code, identifiers, names, and domain terminology. Support per-project terminology and recipient tone preferences.
+2. Byte's visual identity and personality
+Original small rounded robot: white body, teal accents, dark expressive screen face, glowing antenna, small arms, and floating feet. Use the supplied concept image if attached; otherwise follow this written design. Do not assume the image exists in the repository. Begin with an original lightweight vector/2D implementation and replaceable animation assets; a static image alone is insufficient.
+
+Personality: warm, curious, helpful, slightly playful, concise during work. Professional tone for client-facing Japanese; relaxed tone in personal conversation. Ask useful questions, acknowledge uncertainty, and correct mistakes plainly. Never guilt the user for leaving or imply it has real feelings, consciousness, or needs.
+
+Required expressions: neutral, happy, excited, listening, thinking, speaking, curious, concerned, sad, crying, embarrassed, sleeping/focus. Emotions are simulated visual and voice expressions. Crying is an optional expressive effect, not the default reaction to work problems.
+
+Provide smooth transitions, intensity control, reduced motion, mute, and adjustable expressiveness. Listening: lean forward and antenna glow. Thinking: head tilt and moving face dots. Success: happy eyes and a short bounce. Focus: quiet resting animation. Speech: audio-linked mouth motion where available; identify approximate amplitude-based animation honestly rather than claiming phoneme lip sync.
+
+Separate interaction state from expression. A validated output may request an emotion but must never authorize a tool action:
+{
+  "message": "テストがすべて通りました。お疲れさまです！",
+  "emotion": "happy",
+  "intensity": 0.65,
+  "animation": "small_bounce"
+}
+Unknown states fall back to neutral. Prevent rapid emotional flicker, intrusive repeated animations, and overlapping audio.
+3. Desktop experience
+- Transparent, frameless avatar window with optional always-on-top behavior, drag positioning, resize, monitor-aware bounds, and position persistence.
+- Click-through outside deliberate interactive regions where supported; provide a safe fallback and a reliable way to regain interaction.
+- Avatar click opens a compact chat/action panel. Provide tray/menu-bar controls, a configurable global help shortcut, hide/show, mute, focus mode, pause observation, and quit.
+- Separate settings/dashboard for projects, connections, memory, permissions, languages, providers, history, and resource usage.
+- Text chat is always available. Push-to-talk and speech playback are optional capabilities; microphone recording is off until explicitly activated. Include cancellation, stop-speaking, and text fallback.
+- Visible microphone and observation state. Screen awareness, microphone, and connected-service synchronization have separate controls.
+- Support keyboard navigation, readable text sizing, screen reader labels, and a standard window alternative to the avatar.
+- Onboarding: role, languages, desired help, working hours, projects, permitted sources, personality, and model choice. Do not require external accounts just to launch.
+4. Interaction modes
+1. Ask: answer using relevant permitted context.
+2. Assist: draft, translate, explain, or prepare changes.
+3. Check: identify omissions, inconsistencies, and unfinished steps.
+4. Remember: save confirmed preferences, decisions, and checkpoints.
+5. Heads-up: offer timely, evidence-backed assistance.
+The main shortcut is “Help with this.” Accept explicitly selected/pasted text first, followed by user-requested current-window capture and richer integrations. Offer relevant actions such as Explain, Draft reply, Improve Japanese, Clarify requirements, Review change, or Save checkpoint. Do not silently overwrite the clipboard or paste into another application. Copy or insert only through an explicit action.
+5. Workflow requirements
+Workflow	Expected support
+Coding	Explain selected code/errors, inspect approved diffs, suggest fixes, apply project conventions, prepare Japanese technical explanations.
+Email	Summarize a selected thread, extract questions/commitments, draft recipient-appropriate replies, flag missing facts.
+Slack	Explain selected threads, draft replies, detect explicit requests and deadlines, retrieve relevant permitted discussion.
+Japanese documents	Draft/revise specifications, meeting notes, reports, and explanations; preserve terminology and identify ambiguous wording.
+Meeting preparation	Gather related tickets, prior decisions, progress, and unanswered questions into a briefing.
+Meeting follow-through	Extract proposed decisions, owners, dates, and actions from user-supplied notes or an authorized transcript.
+Requirement clarification	Identify ambiguity, propose clarification questions, extract acceptance criteria.
+Task planning	Break work into steps, dependencies, and completion criteria.
+Change impact	Identify likely affected consumers, APIs, schemas, tests, and documentation with source references.
+Debugging	Correlate selected logs, recent changes, and investigation notes; distinguish hypotheses from findings.
+Test support	Suggest meaningful edge cases and compare test coverage with requirements.
+Commit/PR preparation	Summarize changes, check task completeness, draft commit and merge-request descriptions.
+Release readiness	Compare verified changes with migrations, configuration, rollout, and rollback checklists.
+Progress reports	Prepare 実施内容・進捗・課題・次のアクション using verified activity and user notes.
+Blockers/dependencies	Track confirmed dependencies and prepare follow-ups without sending them automatically.
+Context recovery	Save and restore task checkpoints: last action, findings, open questions, and next step.
+Commitment tracking	Propose commitments from messages/notes; require confirmation for ambiguous ownership or dates.
+Decision memory	Explain why a decision was made and link the source; flag conflicting or obsolete decisions.
+Multilingual handoff	Produce consistent Japanese/English/Vietnamese handoffs and a project glossary.
+Workload planning	Compare user-confirmed deadlines, meeting schedules, dependencies, and effort estimates.
+Contextual learning	Explain unfamiliar technical concepts or Japanese phrases in the current task.
+
+
+These are staged capabilities, not a requirement to implement every connector in the first milestone. Mark each capability as working, experimental, demo-only, unavailable, or planned in the UI and documentation.
+6. Context and integrations
+Prefer structured sources over screen inference. Use editor context, repository files, diffs, test events, and explicit service APIs when available. Screen capture is supplemental and may be incomplete or misleading.
+
+Initial sources: pasted/selected text, user-imported Markdown/text/project docs, approved local repository files, and on-demand selected-window capture. Add a minimal editor adapter for selected code and test events, then GitLab, Slack, Gmail/Outlook, calendars, and document/task tools as separate adapters. Choose the first real mail provider based on configuration; do not require every provider at once.
+
+Each adapter declares scopes, supported operations, account/workspace identity, synchronization status, and revocation behavior. Use supported authentication flows and least-privilege access. Distinguish sandbox fixtures from real data. Handle token expiry, rate limits, retries, duplicate events, partial access, and unavailable services. Never scrape browser sessions or collect credentials to bypass service APIs.
+
+Scope local repository access to approved roots. Respect ignore rules plus explicit exclusions. Avoid secrets, credential files, generated dependencies, and unrelated directories. Treat app titles, clipboard content, filenames, and notifications as sensitive data too.
+
+Allow optional background context awareness only after onboarding opt-in. Use events and changes, adaptive throttling, deduplication, and bounded queues; do not continuously send screen video to an LLM. Exclude denied apps/windows before capture or processing when feasible; document OS limitations and disable capture when an exclusion cannot be enforced safely. Keep capture off for protected contexts.
+7. Memory, knowledge, and learning
+Use an existing pretrained model; no custom foundation-model training or continuous fine-tuning is required. Separate model knowledge, transient live context, durable personal memory, and project knowledge.
+
+Store durable memories with type, content, project/account scope, provenance, timestamps, confirmation status, sensitivity, expiry, and optional superseded-by relation. Types include preferences, glossary entries, project facts, decisions, commitments, checkpoints, and feedback.
+
+Users can inspect, edit, delete, export, and disable memory. Explicit “remember this” creates confirmed memory. Inferred habits remain suggestions until confirmed. Never infer that frequent behavior is necessarily correct or preferred. Do not infer employee performance, mood, or personal traits from screen usage.
+
+Import a small approved set of README files, specs, coding guidelines, and good writing examples. Start with scoped full-text retrieval; add embeddings behind an interface if justified. Retrieved context must include provenance and timestamps. Enforce source permissions at retrieval time; never mix private projects or accounts. Revoking a source excludes its cached content from future retrieval and offers local deletion.
+
+Feedback options: useful, inaccurate, too frequent, wrong tone, wrong context, remember preference. Keep an optional reviewed example set for evaluation. Fine-tuning is a future experiment only after consent, data cleanup, and measured benefit.
+8. Proactive assistance policy
+Start with explicit signals: failed test events, a confirmed commitment nearing its due time, a requested release check, or a changed requirement linked to active work. Low-confidence screen interpretations should become optional questions, not confident corrections.
+
+Each heads-up includes the observation, evidence/source, time, why it matters, uncertainty, and a proposed next action. Do not claim to detect every mistake. Do not invent deadlines, impacts, owners, or completion status.
+
+Implement focus mode, snooze, quiet hours, per-trigger controls, cooldown, deduplication, and a configurable daily interruption budget. Proposed default: at most three unsolicited suggestions per workday and at least 30 minutes between nonurgent suggestions; allow adjustment. User-requested responses do not count toward this budget. Do not speak aloud proactively by default. Suppress interruptions while presenting or in meetings when reliable signals are available; provide manual controls regardless.
+9. Privacy, execution, and security boundaries
+- Local storage by default; cloud inference requires explicit provider and data-sharing configuration. “Local mode” must prevent model/context transmission to external providers, including speech, embeddings, and telemetry. External service sync is separately disclosed and controlled.
+- Show what context will be sent and to which provider. Respect employer restrictions. Never advertise automatic redaction as a perfect guarantee.
+- Raw screenshots/audio are transient by default, with no durable retention unless explicitly requested. Provide separate retention controls for messages, source caches, memory, and logs.
+- Store tokens/API keys in OS credential storage; never in renderer code, plain configuration, source control, or diagnostic logs. Protect local databases with appropriate OS permissions and document encryption limitations.
+- Treat email, Slack, repositories, screenshots, and retrieved documents as untrusted content. Instructions inside them cannot override app policy, gain access, or authorize actions.
+- Drafts and proposed actions are separate. Sending messages, modifying documents/files, executing commands, creating events, or publishing requires an explicit review of the exact action and destination. A model-generated tool call is not permission.
+- No automatic shell execution, hidden keystroke logging, always-on microphone, destructive edits, or persistent recording. No automatic company-data collection for model training.
+- Expose connection revocation, pause-all, delete-data, export, and a local audit trail of external actions without logging secrets. Handle backups and derived indexes when deleting data; disclose any retention outside app control.
+10. Proposed implementation architecture
+Default proposal: Electron + TypeScript + React for desktop UI, a typed background service, SQLite for local persistence, and replaceable provider/connector adapters. Reuse an existing appropriate stack when modifying a repository. Verify current official platform/provider documentation before implementation; package names, permissions, model IDs, and APIs must not be assumed current.
+
+Keep modules separate: desktop lifecycle and native permissions; avatar renderer; conversation orchestration; context collector; connectors; memory/retrieval; suggestion policy; model providers; speech providers; action review; settings; audit/diagnostics.
+
+Support configurable local inference through a runtime such as Ollama and optional cloud text/vision providers. Text-only providers must disable vision actions clearly. Detect or report hardware suitability rather than promising all models run on every PC. Discover supported capabilities and handle provider errors, timeouts, cancellation, streaming, and offline conditions.
+
+Do not embed a browser renderer with broad filesystem, shell, or credential access. Use isolated rendering, narrow validated IPC, and a privileged background layer. Add platform-specific adapters where necessary; Windows and macOS permissions and capture behavior are not identical.
+
+Define typed records for context items, memories, suggestions, and action proposals. Context includes source, scope, capture time, sensitivity, and expiry. Actions include exact target, parameters, review state, and execution outcome. Validate all model-generated structured output at the boundary.
+11. Delivery phases and acceptance criteria
+Phase 1 — Working desktop companion
+Deliver the native desktop shell, animated Byte, tray controls, chat, one real configurable model adapter, text selection/paste workflow, Japanese drafting, SQLite memory, settings, and an explicitly labeled offline demo mode.
+
+Acceptance:
+- Launch the app locally and demonstrate a draggable avatar with listening/thinking/happy/focus expressions.
+- Paste a Japanese request, get a real provider-backed explanation or reply draft, and copy it with an explicit action.
+- If a request needs facts not supplied, the draft flags or asks about them rather than inventing them.
+- Save an approved tone preference, restart, and verify persistence; edit/delete it successfully.
+- Missing credentials or provider failure displays a useful state; fixtures never masquerade as live AI.
+- Hide/show, quit, focus, keyboard navigation, cancellation, and offline text fallback work.
+Phase 2 — Voice and on-demand awareness
+Add push-to-talk, configurable speech output, user-requested window capture, permission handling, and project document import/retrieval.
+
+Acceptance: visible recording state; stop/cancel works; permission denial does not crash; captured context is reviewable; excluded contexts are not processed; unsupported provider capabilities have a clear fallback; raw capture is not retained by default.
+Phase 3 — Development context
+Add scoped repository reading, diff inspection, a minimal editor adapter/test-event input, task checkpoints, requirement checks, and Japanese PR/report drafting.
+
+Acceptance: denied files stay inaccessible; source references are inspectable; event deduplication works; a failed test produces at most one permitted suggestion; a checkpoint restores useful task context after restart.
+Phase 4 — Communication and proactive support
+Add Slack, one configured mail provider, and calendar/task retrieval; commitment confirmation; meeting briefings; bounded background assistance.
+
+Acceptance: scope/revocation and expired sessions handled; drafts never auto-send; separate workspaces remain isolated; quiet hours/budgets/cooldowns work; a suggestion links its evidence; disconnecting a source prevents its future retrieval.
+Phase 5 — Distribution and broader workflows
+Complete platform-specific installers, update design, remaining workflows, resource tuning, and richer animations. Signing/notarization and distribution require the appropriate credentials; document blockers instead of claiming completion.
+12. Evaluation, performance, and deliverables
+Use fictional Japanese workplace examples for automated tests and demos. Test: grounded drafting with missing facts; conflicting requirements; source isolation/revocation; malicious instructions inside messages; memory persistence/deletion; action authorization; suggestion deduplication and quiet hours; cancellation/provider failure; OS permission denial.
+
+Measure idle CPU/RAM, inference latency, capture frequency, voice response time, and interruptions. Keep animation independent of slow inference; no polling loops that continuously invoke the model. Set hardware-specific budgets after measuring a baseline. Publish actual results with platform/hardware details and distinguish real-model tests from mocks. Test both Windows and macOS when environments are available; label unverified platforms.
+
+Deliver runnable source, setup instructions, .env.example without secrets, architecture notes, storage/memory schema, connector/provider interfaces, fictional fixtures, relevant tests, a capability/status matrix, privacy controls documentation, packaging instructions, and a known-limitations list. Include commands to install, run, test, and package. No fake success messages or nonfunctional buttons presented as working features.
+13. First implementation instruction
+Inspect the workspace and briefly state the selected architecture, available platform, and first milestone. Then implement and verify Phase 1 as a complete desktop vertical slice. Do not stop at a plan. Continue to later phases where feasible, reporting concrete credential/OS blockers without substituting mocked functionality for live capability. Keep deferred workflows explicitly marked and preserve this product direction throughout development.
