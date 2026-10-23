@@ -22,3 +22,5 @@ npm run smoke
 PR 1 provides a secure shell and Japanese capability screen. It does not yet provide conversation, animation, an avatar window, tray controls, settings, or memory. Follow the [roadmap](docs/roadmap.md) for those focused PRs.
 
 See [architecture and privacy](docs/architecture.md) and [verification results](docs/verification.md).
+
+English and Japanese UI are available from the header language selector (Japanese by default). Selection currently lasts for the window session. Additional languages, including Vietnamese, are planned; English/Japanese are the current priority.

@@ -30,7 +30,18 @@ app.whenReady().then(() => {
             return { mode: info.mode, isolated: typeof require === 'undefined' && typeof process === 'undefined', heading: document.querySelector('h1')?.textContent };
           })()`);
           if (result.mode !== 'offline-shell' || !result.isolated || result.heading !== 'こんにちは、Byte です。') throw new Error('Smoke assertions failed');
-          console.log('Desktop smoke passed: loaded React, validated IPC, isolated renderer.');
+          const switched = await window.webContents.executeJavaScript(`(async () => {
+            const select = document.querySelector('select');
+            const checkLanguage = async (language, heading) => {
+              select.value = language;
+              select.dispatchEvent(new Event('change', { bubbles: true }));
+              await new Promise(resolve => setTimeout(resolve, 100));
+              return document.documentElement.lang === language && document.querySelector('h1')?.textContent === heading;
+            };
+            return await checkLanguage('en', 'Hello, I’m Byte.') && await checkLanguage('ja', 'こんにちは、Byte です。');
+          })()`);
+          if (!switched) throw new Error('Language switching failed');
+          console.log('Desktop smoke passed: React, validated IPC, isolated renderer, English/Japanese switching.');
           clearTimeout(timer);
           app.exit(0);
         } catch (error) { console.error(error); app.exit(1); }

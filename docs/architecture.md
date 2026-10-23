@@ -33,3 +33,9 @@ The native standard window supports normal OS movement, resizing, keyboard navig
 This shell sends no model/context data and stores no application messages, memory, captures, or credentials. Electron/Chromium may create its normal runtime profile under the OS user-data directory; this is not an encrypted application database. Do not enter secrets into future sample configuration. `.env.example` contains no keys. Telemetry is not implemented.
 
 Later PRs must add explicit provider/data-sharing setup, OS credential storage, source approval and revocation, separate retention controls, SQLite migrations, and reviewed action execution. No memory schema or provider adapter is represented as implemented here.
+
+## Languages
+
+English and Japanese are available through the header language selector. Japanese remains the initial default. The selector updates every visible message, the robot's accessible label, and the document language. Selection lasts for the current window session; persistence will be added with settings. UI language and future AI output language will be separate preferences.
+
+`src/renderer/i18n.ts` defines a typed message catalog; additional languages must implement all message keys. Vietnamese remains planned, with English and Japanese prioritized for implementation and evaluation.

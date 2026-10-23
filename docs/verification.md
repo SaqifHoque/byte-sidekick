@@ -12,3 +12,5 @@ A macOS/Windows CI template is supplied at `docs/ci-workflow.yml.example`; CI is
 - Electron 45.0.0, macOS ARM64: native `npm run smoke` passed (React heading, IPC round trip, no renderer Node globals).
 - The agent host sets `ELECTRON_RUN_AS_NODE=1`; native launch was verified with that host flag removed using `env -u ELECTRON_RUN_AS_NODE`. Normal desktop shells should not set this flag.
 - `git diff --check` passed before publication.
+
+English/Japanese update: typecheck, both security tests, and production build passed. The native macOS smoke test additionally switched Japanese → English → Japanese and verified the heading and document language after each change. Language persistence remains deferred to settings.

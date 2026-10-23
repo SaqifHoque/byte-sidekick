@@ -3,10 +3,10 @@
 Each numbered item is one feature-specific PR with at least five small, meaningful commits. Keep commits reviewable; do not squash away the requested history. A phase is complete only when its product-brief acceptance criteria pass. PR 1 is the shell foundation, not a claim that Phase 1 is complete.
 
 ## Phase 1 — Working desktop companion
-1. Secure runnable desktop shell: build tools; isolated native window; typed IPC; Japanese React shell; CI and launch verification.
+1. Secure runnable desktop shell: build tools; isolated native window; typed IPC; English/Japanese React shell; CI and launch verification.
 2. Animated vector Byte: asset contract; expressions; transitions; intensity; reduced motion and verification.
 3. Desktop controls: transparent avatar; dragging and bounds; tray; help shortcut; hide/show and recovery.
-4. Local settings and onboarding: schema; storage; language; permission defaults; restart verification.
+4. Local settings and onboarding: schema; storage; persistent UI/output language preferences (English/Japanese first); permission defaults; restart verification.
 5. Real configurable local model adapter: capabilities; loopback transport; timeout/cancellation; provider settings; error and live integration checks.
 6. Grounded Japanese chat: orchestration; pasted context review; streaming UI; explicit copy; missing-fact and injection evaluation.
 7. SQLite confirmed memory: schema; repository; save/retrieve; edit/delete/export; restart and isolation verification.
