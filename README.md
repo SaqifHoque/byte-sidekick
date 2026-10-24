@@ -24,3 +24,5 @@ PR 1 provides a secure shell and Japanese capability screen. It does not yet pro
 See [architecture and privacy](docs/architecture.md) and [verification results](docs/verification.md).
 
 English and Japanese UI are available from the header language selector (Japanese by default). Selection currently lasts for the window session. Additional languages, including Vietnamese, are planned; English/Japanese are the current priority.
+
+Planned local AI default: **Qwen3.5 4B via Ollama** (`qwen3.5:4b`), selected for implementation in PR #5. It is not connected in the current shell. See the [model decision](docs/architecture.md#local-model-decision-2026-10-25).
