@@ -3,6 +3,9 @@ export type Language = keyof typeof languages;
 export const defaultLanguage: Language = 'ja';
 
 const ja = {
+  preview: '表情プレビュー', previewNote: '表示のみのプレビューです。マイク・音声・AI は作動しません。',
+  expressionLabel: '表情', intensityLabel: '表現の強さ', reducedMotionLabel: '動きを減らす',
+  neutral: '通常', happy: 'うれしい', excited: 'わくわく', listening: '聞く', thinking: '考える', speaking: '話す', curious: '興味', concerned: '心配', sad: '悲しい', crying: '涙', embarrassed: '照れる', focus: '集中・休息',
   language: '言語 / Language', badge: 'デスクトップ基盤', avatar: '白とティールのロボット Byte',
   tagline: 'あなたの仕事に、そっと寄り添う。', welcome: 'こんにちは、Byte です。',
   introduction: '小さな一歩から、一緒に。', description: '現在はデスクトップアプリの基盤を準備しています。',
@@ -14,6 +17,9 @@ const ja = {
 };
 export type Messages = { [Key in keyof typeof ja]: string };
 const en: Messages = {
+  preview: 'Expression preview', previewNote: 'Visual preview only. Microphone, audio and AI remain off.',
+  expressionLabel: 'Expression', intensityLabel: 'Expressiveness', reducedMotionLabel: 'Reduce motion',
+  neutral: 'Neutral', happy: 'Happy', excited: 'Excited', listening: 'Listening', thinking: 'Thinking', speaking: 'Speaking', curious: 'Curious', concerned: 'Concerned', sad: 'Sad', crying: 'Crying', embarrassed: 'Embarrassed', focus: 'Focus / resting',
   language: 'Language / 言語', badge: 'Desktop foundation', avatar: 'Byte, a white and teal robot',
   tagline: 'A little company for your workday.', welcome: 'Hello, I’m Byte.',
   introduction: 'One small step at a time, together.', description: 'The desktop app foundation is taking shape.',
