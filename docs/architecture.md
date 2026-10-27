@@ -23,7 +23,8 @@ The native standard window supports normal OS movement, resizing, keyboard navig
 | Read-only app metadata IPC | Working |
 | Microphone, capture, external sync | Unavailable; permission requests denied |
 | Model inference and conversation | Planned; no simulated AI responses |
-| Avatar animation/tray/shortcut | Planned |
+| Vector avatar expressions and reduced-motion controls | Working; visual preview only |
+| Transparent avatar/tray/shortcut | Planned |
 | SQLite memory/settings/history | Planned |
 | Voice/connectors/action execution | Planned |
 | Signed installers/updates | Planned |
@@ -39,3 +40,22 @@ Later PRs must add explicit provider/data-sharing setup, OS credential storage, 
 English and Japanese are available through the header language selector. Japanese remains the initial default. The selector updates every visible message, the robot's accessible label, and the document language. Selection lasts for the current window session; persistence will be added with settings. UI language and future AI output language will be separate preferences.
 
 `src/renderer/i18n.ts` defines a typed message catalog; additional languages must implement all message keys. Vietnamese remains planned, with English and Japanese prioritized for implementation and evaluation.
+
+See [avatar behavior](avatar.md) for expression contracts, motion controls, and preview limitations.
+
+## Local model decision (2026-10-25)
+
+The user selected **Qwen3.5 4B through Ollama**, using the explicit model tag `qwen3.5:4b` rather than `latest`. This replaces the earlier tentative 9B choice and the subsequent cloud-only proposal. English and Japanese are the initial evaluation languages. Provider implementation remains planned for PR #5; no model has been downloaded or connected by this change.
+
+The user accepted 4B after being told it exceeds the earlier 1 GB total-memory preference. The estimated inference footprint discussed was 4–7 GB for short text conversations, plus Byte's UI; this is a planning estimate, not a measured result or hard ceiling. The reference machine is an Apple M3 MacBook Pro with 16 GB unified memory. Do not promise inference stays under 1 GB or cannot affect other work.
+
+Implementation requirements:
+
+- Load only on an explicit request; do not preload at launch or run background inference by default.
+- One model and one inference request at a time; begin with a bounded 4K context.
+- Request unloading after use, including cancellation/error cleanup; verify behavior with Ollama rather than claiming immediate OS memory reclamation.
+- Keep UI responsive, provide cancellation and an explicit release-model control, and handle insufficient memory with a useful error. Do not silently switch to cloud inference.
+- Measure total Byte process memory and Ollama memory separately during startup, first load, generation, and after unloading. Record latency and cold-start cost. Keep idle overhead low; no hard memory guarantee until measured.
+- Evaluate Japanese/English drafting, missing facts, code explanations, instruction isolation, and cancellation on real inference before marking the adapter working.
+
+Reference model listing: https://ollama.com/library/qwen3.5:4b . Exact quantization, model digest, runtime version, context length, and hardware must be recorded during validation because a model tag can change.

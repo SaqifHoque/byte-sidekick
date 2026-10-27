@@ -7,7 +7,7 @@ Each numbered item is one feature-specific PR with at least five small, meaningf
 2. Animated vector Byte: asset contract; expressions; transitions; intensity; reduced motion and verification.
 3. Desktop controls: transparent avatar; dragging and bounds; tray; help shortcut; hide/show and recovery.
 4. Local settings and onboarding: schema; storage; persistent UI/output language preferences (English/Japanese first); permission defaults; restart verification.
-5. Real configurable local model adapter: capabilities; loopback transport; timeout/cancellation; provider settings; error and live integration checks.
+5. Real configurable local model adapter (Ollama `qwen3.5:4b`; on-demand loading/unloading): capabilities; loopback transport; timeout/cancellation; provider settings; error and live integration checks.
 6. Grounded Japanese chat: orchestration; pasted context review; streaming UI; explicit copy; missing-fact and injection evaluation.
 7. SQLite confirmed memory: schema; repository; save/retrieve; edit/delete/export; restart and isolation verification.
 8. Phase 1 completion: focus/mute; standard-window accessibility; offline demo labeling; end-to-end checks; capability documentation.
