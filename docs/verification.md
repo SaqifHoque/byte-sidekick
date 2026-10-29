@@ -14,3 +14,9 @@ A macOS/Windows CI template is supplied at `docs/ci-workflow.yml.example`; CI is
 - `git diff --check` passed before publication.
 
 English/Japanese update: typecheck, both security tests, and production build passed. The native macOS smoke test additionally switched Japanese → English → Japanese and verified the heading and document language after each change. Language persistence remains deferred to settings.
+
+## Animated Byte results — 2026-10-27
+
+macOS ARM64, cached Node 22 runtime: TypeScript checking, all three tests (including avatar boundary validation), and production build passed. Native Electron smoke passed: renderer isolation, English/Japanese switching, all twelve expression selections, accessible focus label, and manual reduced-motion animation suppression. Checks were run directly with the cached runtime because npm package resolution stalled in this environment. `git diff --check` passed.
+
+React review: extracted avatar/control components, hook subscription cleanup, complete effect dependencies, typed message keys, labeled native controls, no animation frame state updates, no new runtime dependencies. OS reduced-motion CSS and media-query subscription are implemented; an OS-setting toggle and screen-reader session were not manually tested. No memory/CPU baseline or Windows runtime result is claimed.
